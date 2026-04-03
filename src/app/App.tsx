@@ -7,12 +7,10 @@ export default function App() {
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
-
       const scrollTop = containerRef.current.scrollTop;
       const scrollHeight =
         containerRef.current.scrollHeight - containerRef.current.clientHeight;
       const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
-
       setScrollProgress(progress);
     };
 
@@ -59,50 +57,56 @@ export default function App() {
     return outStart + (outEnd - outStart) * t;
   };
 
-  const scene0Progress = getSceneProgress(0.00, 0.07); // intro video
-  const scene1Progress = getSceneProgress(0.07, 0.13); // wealth is not a portfolio
-  const scene2Progress = getSceneProgress(0.13, 0.21); // withdrawal strategy
-  const scene3Progress = getSceneProgress(0.21, 0.28); // volatility
-  const scene4Progress = getSceneProgress(0.28, 0.35); // dependence
-  const scene5Progress = getSceneProgress(0.35, 0.44); // traditional portfolios...
-  const scene6Progress = getSceneProgress(0.44, 0.52); // systems endure
-  const scene7Progress = getSceneProgress(0.52, 0.74); // EVF reveal
-  const scene8Progress = getSceneProgress(0.74, 0.90); // stress absorption
-  const scene9Progress = getSceneProgress(0.90, 0.96); // closing
-  const scene10Progress = getSceneProgress(0.96, 1.00); // CTA
+  const scene0Progress = getSceneProgress(0.0, 0.08);
+  const scene1Progress = getSceneProgress(0.08, 0.15);
+  const scene2Progress = getSceneProgress(0.15, 0.23);
+  const scene3Progress = getSceneProgress(0.23, 0.31);
+  const scene4Progress = getSceneProgress(0.31, 0.39);
+  const scene5Progress = getSceneProgress(0.39, 0.5);
+  const scene6Progress = getSceneProgress(0.5, 0.73);
+  const scene7Progress = getSceneProgress(0.73, 0.9);
+  const scene8Progress = getSceneProgress(0.9, 0.96);
+  const scene9Progress = getSceneProgress(0.96, 1.0);
 
-  const evfSceneOpacity = getFadeInHoldOut(scene7Progress, 0.08, 0.90);
-  const stressSceneOpacity = getFadeInHoldOut(scene8Progress, 0.10, 0.96);
+  const systemsEndureOpacity =
+    scene5Progress > 0.42 && scene5Progress < 0.94
+      ? Math.min((scene5Progress - 0.42) / 0.14, 1) *
+        (1 - Math.max((scene5Progress - 0.8) / 0.14, 0))
+      : 0;
+
+  const evfSceneOpacity = getFadeInHoldOut(scene6Progress, 0.08, 0.9);
+  const stressSceneOpacity = getFadeInHoldOut(scene7Progress, 0.12, 0.94);
 
   const evfStage =
-    scene7Progress < 0.18
+    scene6Progress < 0.18
       ? 0
-      : scene7Progress < 0.38
+      : scene6Progress < 0.36
       ? 1
-      : scene7Progress < 0.58
+      : scene6Progress < 0.58
       ? 2
-      : scene7Progress < 0.78
+      : scene6Progress < 0.78
       ? 3
       : 4;
 
-  const systemsEndureSceneOpacity = getFadeInHoldOut(scene6Progress, 0.22, 0.78);
-  const systemsEndureScale =
-    0.98 + Math.min(mapRange(scene6Progress, 0.18, 0.42, 0, 1), 1) * 0.02;
+  const evfDiagramScale =
+    scene6Progress < 0.18
+      ? 0.96 + mapRange(scene6Progress, 0.0, 0.18, 0, 0.05)
+      : scene6Progress < 0.82
+      ? 1.01
+      : 1.01 - mapRange(scene6Progress, 0.82, 1.0, 0, 0.02);
 
-  const finalLifestyleGlowOpacity =
-    scene8Progress > 0.82 ? Math.min((scene8Progress - 0.82) / 0.10, 1) : 0;
+  const evfDiagramOpacity = getFadeInHoldOut(scene6Progress, 0.1, 0.92);
 
-  const stressMessageOpacity =
-    scene8Progress < 0.70
-      ? scene8Progress > 0.48
-        ? Math.min((scene8Progress - 0.48) / 0.12, 1)
-        : 0
-      : Math.max(1 - (scene8Progress - 0.70) / 0.12, 0);
+  const lifestyleGlowOpacity =
+    scene7Progress > 0.76 ? Math.min((scene7Progress - 0.76) / 0.08, 1) : 0;
 
-  const stressSystemOpacity =
-    scene8Progress < 0.80 ? 1 : Math.max(1 - (scene8Progress - 0.80) / 0.12, 0.25);
+  const lifestyleBeamOpacity =
+    scene7Progress > 0.5 ? Math.min((scene7Progress - 0.5) / 0.12, 1) : 0;
 
-  const ctaOpacity = Math.min(scene10Progress / 0.25, 1);
+  const scene7TextOpacity =
+    scene7Progress > 0.82 ? Math.min((scene7Progress - 0.82) / 0.1, 1) : 0;
+
+  const finalCtaOpacity = scene9Progress <= 0.2 ? scene9Progress / 0.2 : 1;
 
   return (
     <div
@@ -111,14 +115,14 @@ export default function App() {
       style={{
         scrollBehavior: 'smooth',
         background: `
-          radial-gradient(circle at 50% 34%, rgba(36, 92, 70, 0.18), transparent 40%),
-          radial-gradient(circle at 82% 78%, rgba(22, 58, 45, 0.10), transparent 36%),
+          radial-gradient(circle at 50% 35%, rgba(36, 92, 70, 0.18), transparent 42%),
+          radial-gradient(circle at 82% 78%, rgba(22, 58, 45, 0.10), transparent 38%),
           radial-gradient(circle at 18% 20%, rgba(18, 34, 48, 0.12), transparent 34%),
           #000000
         `,
       }}
     >
-      <div style={{ height: '1700vh' }}>
+      <div style={{ height: '1550vh' }}>
         {/* SCENE 0 — INTRO VIDEO */}
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <video
@@ -127,10 +131,10 @@ export default function App() {
             loop
             playsInline
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
-              opacity: 1 - scene0Progress * 1.02,
-              filter: `blur(${scene0Progress * 4}px) brightness(${1 - scene0Progress * 0.18})`,
+              opacity: 1 - scene0Progress * 1.05,
+              filter: `blur(${scene0Progress * 5}px) brightness(${1 - scene0Progress * 0.22})`,
               transform: `scale(${1 + scene0Progress * 0.02})`,
             }}
           >
@@ -144,7 +148,7 @@ export default function App() {
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.24))',
+                'linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0.28))',
               opacity: 1 - scene0Progress * 0.35,
             }}
           />
@@ -152,21 +156,21 @@ export default function App() {
           <div
             className="absolute inset-0 bg-black"
             style={{
-              opacity: scene0Progress * 0.78,
+              opacity: scene0Progress * 0.82,
             }}
           />
         </div>
 
         {/* SCENE 1 — HERO */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
             style={{
-              opacity: getFadeInHoldOut(scene1Progress, 0.22, 0.72),
-              transform: `translateY(${(1 - getFadeInHoldOut(scene1Progress, 0.22, 0.72)) * 20}px)`,
+              opacity: getFadeInHoldOut(scene1Progress, 0.22, 0.7),
+              transform: `translateY(${(1 - getFadeInHoldOut(scene1Progress, 0.22, 0.7)) * 20}px)`,
             }}
           >
             <h1
-              className="max-w-5xl px-8 text-center text-5xl md:text-7xl"
+              className="text-5xl md:text-7xl max-w-5xl text-center px-8"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               Wealth is not a portfolio.
@@ -175,15 +179,15 @@ export default function App() {
         </div>
 
         {/* SCENE 2 — WITHDRAWAL STRATEGY */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
             style={{
-              opacity: getFadeInHoldOut(scene2Progress, 0.22, 0.76),
-              transform: `translateY(${(1 - getFadeInHoldOut(scene2Progress, 0.22, 0.76)) * 18}px)`,
+              opacity: getFadeInHoldOut(scene2Progress, 0.22, 0.72),
+              transform: `translateY(${(1 - getFadeInHoldOut(scene2Progress, 0.22, 0.72)) * 20}px)`,
             }}
           >
             <h1
-              className="max-w-5xl px-8 text-center text-4xl md:text-6xl"
+              className="text-4xl md:text-6xl max-w-5xl text-center px-8"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               Most financial plans are portfolios with a withdrawal strategy.
@@ -192,15 +196,15 @@ export default function App() {
         </div>
 
         {/* SCENE 3 — VOLATILITY */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
             style={{
-              opacity: getFadeInHoldOut(scene3Progress, 0.25, 0.74),
-              transform: `translateY(${(1 - getFadeInHoldOut(scene3Progress, 0.25, 0.74)) * 16}px)`,
+              opacity: getFadeInHoldOut(scene3Progress, 0.25, 0.72),
+              transform: `translateY(${(1 - getFadeInHoldOut(scene3Progress, 0.25, 0.72)) * 18}px)`,
             }}
           >
             <h1
-              className="max-w-4xl px-8 text-center text-4xl md:text-6xl"
+              className="text-4xl md:text-6xl max-w-4xl text-center px-8"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               The problem is not volatility.
@@ -209,15 +213,15 @@ export default function App() {
         </div>
 
         {/* SCENE 4 — DEPENDENCE */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
             style={{
-              opacity: getFadeInHoldOut(scene4Progress, 0.25, 0.76),
-              transform: `translateY(${(1 - getFadeInHoldOut(scene4Progress, 0.25, 0.76)) * 16}px)`,
+              opacity: getFadeInHoldOut(scene4Progress, 0.25, 0.74),
+              transform: `translateY(${(1 - getFadeInHoldOut(scene4Progress, 0.25, 0.74)) * 18}px)`,
             }}
           >
             <h1
-              className="max-w-4xl px-8 text-center text-4xl md:text-6xl"
+              className="text-4xl md:text-6xl max-w-4xl text-center px-8"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               It is dependence.
@@ -225,526 +229,473 @@ export default function App() {
           </div>
         </div>
 
-        {/* SCENE 5 — TRADITIONAL PORTFOLIOS */}
-        <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center">
-          <div className="relative">
-            <svg
-              width="440"
-              height="440"
-              viewBox="0 0 440 440"
-              className="mb-12"
-              style={{ opacity: getFadeInHoldOut(scene5Progress, 0.10, 0.78) }}
-            >
-              <circle
-                cx="220"
-                cy="220"
-                r={Math.max(92 - scene5Progress * 56, 24)}
-                fill="none"
-                stroke="#1a5f3f"
-                strokeWidth="2"
-                opacity={Math.max(1 - scene5Progress * 0.5, 0.28)}
-                style={{
-                  transform: `translate(${-scene5Progress * 26}px, ${scene5Progress * 14}px)`,
-                  transformOrigin: 'center',
-                }}
-              />
-              <circle
-                cx="220"
-                cy="220"
-                r={Math.max(136 - scene5Progress * 80, 34)}
-                fill="none"
-                stroke="#1a5f3f"
-                strokeWidth="2"
-                opacity={Math.max(0.7 - scene5Progress * 0.35, 0.20)}
-                style={{
-                  transform: `translate(${scene5Progress * 30}px, ${-scene5Progress * 18}px)`,
-                  transformOrigin: 'center',
-                }}
-              />
-              <circle
-                cx="220"
-                cy="220"
-                r={Math.max(180 - scene5Progress * 104, 44)}
-                fill="none"
-                stroke="#1a5f3f"
-                strokeWidth="2"
-                opacity={Math.max(0.44 - scene5Progress * 0.24, 0.14)}
-                style={{
-                  transform: `translate(${-scene5Progress * 12}px, ${scene5Progress * 22}px)`,
-                  transformOrigin: 'center',
-                }}
-              />
-            </svg>
-
-            <div
-              className="max-w-5xl px-8 text-center"
-              style={{ fontFamily: 'Georgia, serif' }}
-            >
-              <p
-                className="text-4xl md:text-6xl"
-                style={{
-                  opacity: getFadeInHoldOut(scene5Progress, 0.18, 0.58),
-                  transform: `translateY(${(1 - getFadeInHoldOut(scene5Progress, 0.18, 0.58)) * 14}px)`,
-                }}
-              >
-                Traditional portfolios converge under stress.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* SCENE 6 — SYSTEMS ENDURE */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        {/* SCENE 5 — CONVERGENCE UNDER STRESS */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
-            className="px-8 text-center"
-            style={{
-              opacity: systemsEndureSceneOpacity,
-              transform: `scale(${systemsEndureScale}) translateY(${(1 - systemsEndureSceneOpacity) * 10}px)`,
-            }}
+            className="text-center max-w-4xl px-8 relative"
+            style={{ fontFamily: 'Georgia, serif' }}
           >
-            <h1
-              className="text-5xl md:text-7xl"
-              style={{ fontFamily: 'Georgia, serif' }}
+            <div className="relative mx-auto mb-16 h-56 w-56">
+  <div
+    className="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20"
+    style={{
+      opacity:
+        scene5Progress > 0.04
+          ? Math.min((scene5Progress - 0.04) / 0.16, 1) *
+            (1 - Math.max((scene5Progress - 0.44) / 0.18, 0))
+          : 0,
+      transform: `translate(-50%, -50%) scale(${
+        1 - mapRange(scene5Progress, 0.04, 0.42, 0, 0.32)
+      })`,
+    }}
+  />
+  <div
+    className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/25"
+    style={{
+      opacity:
+        scene5Progress > 0.08
+          ? Math.min((scene5Progress - 0.08) / 0.16, 1) *
+            (1 - Math.max((scene5Progress - 0.46) / 0.18, 0))
+          : 0,
+      transform: `translate(-50%, -50%) scale(${
+        1 - mapRange(scene5Progress, 0.08, 0.44, 0, 0.22)
+      })`,
+    }}
+  />
+  <div
+    className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full"
+    style={{
+      opacity:
+        scene5Progress > 0.14
+          ? Math.min((scene5Progress - 0.14) / 0.14, 1) *
+            (1 - Math.max((scene5Progress - 0.54) / 0.16, 0))
+          : 0,
+      background:
+        'radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.18) 48%, rgba(255,255,255,0) 76%)',
+      filter: 'blur(3px)',
+      transform: `translate(-50%, -50%) scale(${
+        0.95 + mapRange(scene5Progress, 0.14, 0.38, 0, 0.14)
+      })`,
+    }}
+  />
+</div>
+
+            <p
+              className="text-4xl md:text-6xl text-white/70"
+              style={{
+                opacity:
+                  scene5Progress > 0.1 && scene5Progress < 0.72
+                    ? Math.min((scene5Progress - 0.1) / 0.18, 1) *
+                      (1 - Math.max((scene5Progress - 0.56) / 0.16, 0))
+                    : 0,
+                transform: `translateY(${
+                  scene5Progress > 0.1
+                    ? (1 -
+                        Math.min((scene5Progress - 0.1) / 0.18, 1) *
+                          (1 - Math.max((scene5Progress - 0.56) / 0.16, 0))) *
+                      14
+                    : 14
+                }px)`,
+              }}
+            >
+              Under stress, single engines converge.
+            </p>
+
+            <p
+              className="mt-8 text-4xl md:text-6xl text-white/82"
+              style={{
+                opacity: systemsEndureOpacity,
+                transform: `translateY(${(1 - systemsEndureOpacity) * 10}px)`,
+              }}
             >
               Systems endure.
-            </h1>
+            </p>
+
+            <div
+              className="mx-auto mt-12 h-px w-32 bg-white/15"
+              style={{
+                opacity: systemsEndureOpacity,
+                transform: `scaleX(${0.7 + systemsEndureOpacity * 0.3})`,
+              }}
+            />
           </div>
         </div>
 
-        {/* SCENE 7 — EVF REVEAL */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center px-10">
+        {/* SCENE 6 — EVF REVEAL */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center px-8 relative">
           <div
-            className="grid w-full max-w-[1500px] grid-cols-1 gap-16 md:grid-cols-2 md:gap-28"
+            className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16"
             style={{
               opacity: evfSceneOpacity,
               transform: `translateY(${(1 - evfSceneOpacity) * 8}px)`,
             }}
           >
-            {/* LEFT PANEL */}
             <div className="flex flex-col justify-center">
               <p
-                className="mb-10 text-[12px] uppercase text-white/32"
-                style={{ letterSpacing: '0.34em' }}
+                className="text-[13px] md:text-[14px] uppercase text-white/30 mb-10"
+                style={{ letterSpacing: '0.32em' }}
               >
                 Enduring Value Framework™
               </p>
 
               <div
-                className="py-5 transition-all duration-500"
+                className="transition-all duration-500 py-4"
                 style={{
-                  opacity: evfStage === 0 ? 1 : evfStage === 4 ? 0.82 : 0.38,
+                  opacity: evfStage === 0 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 0 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="mb-3 text-3xl md:text-4xl"
+                  className="text-3xl md:text-4xl mb-3"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Foundation
                 </h3>
-                <p className="text-base text-white/58 md:text-lg">
+                <p className="text-white/55 text-base md:text-lg">
                   Structural integrity and protected liquidity
                 </p>
               </div>
 
               <div
-                className="py-5 transition-all duration-500"
+                className="transition-all duration-500 py-4"
                 style={{
-                  opacity: evfStage === 1 ? 1 : evfStage === 4 ? 0.82 : 0.38,
+                  opacity: evfStage === 1 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 1 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="mb-3 text-3xl md:text-4xl"
+                  className="text-3xl md:text-4xl mb-3"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Income
                 </h3>
-                <p className="text-base text-white/58 md:text-lg">
+                <p className="text-white/55 text-base md:text-lg">
                   Stability and repeatable cash flow
                 </p>
               </div>
 
               <div
-                className="py-5 transition-all duration-500"
+                className="transition-all duration-500 py-4"
                 style={{
-                  opacity: evfStage === 2 ? 1 : evfStage === 4 ? 0.82 : 0.38,
+                  opacity: evfStage === 2 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 2 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="mb-3 text-3xl md:text-4xl"
+                  className="text-3xl md:text-4xl mb-3"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Growth
                 </h3>
-                <p className="text-base text-white/58 md:text-lg">
+                <p className="text-white/55 text-base md:text-lg">
                   Long-term expansion and compounding
                 </p>
               </div>
 
               <div
-                className="py-5 transition-all duration-500"
+                className="transition-all duration-500 py-4"
                 style={{
-                  opacity: evfStage === 3 ? 1 : evfStage === 4 ? 0.82 : 0.38,
+                  opacity: evfStage === 3 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 3 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="mb-3 text-3xl md:text-4xl"
+                  className="text-3xl md:text-4xl mb-3"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Adaptive
                 </h3>
-                <p className="text-base text-white/58 md:text-lg">
+                <p className="text-white/55 text-base md:text-lg">
                   Optionality across changing regimes
                 </p>
               </div>
 
               <div
-                className="mt-10 pt-8 transition-all duration-500"
+                className="transition-all duration-500 pt-6 mt-4 border-t border-white/10"
                 style={{
-                  opacity:
-                    scene7Progress > 0.84
-                      ? Math.min((scene7Progress - 0.84) / 0.08, 1)
-                      : 0,
-                  transform: `translateY(${
-                    scene7Progress > 0.84
-                      ? (1 - Math.min((scene7Progress - 0.84) / 0.08, 1)) * 10
-                      : 10
-                  }px)`,
+                  opacity: evfStage === 4 ? 1 : 0,
+                  transform: evfStage === 4 ? 'scale(1)' : 'scale(0.97)',
                 }}
               >
-                <p className="text-lg italic text-white/52 md:text-xl">
+                <p className="text-white/45 text-sm italic">
                   Every engine has a purpose. Every dollar has a job.
                 </p>
               </div>
             </div>
 
-            {/* RIGHT PANEL */}
             <div className="flex items-center justify-center">
-              <svg width="420" height="680" viewBox="0 0 420 680">
-                <defs>
-                  <linearGradient
-                    id="growthGradient"
-                    x1="0%"
-                    y1="100%"
-                    x2="0%"
-                    y2="0%"
+              <div
+                style={{
+                  transform: `scale(${evfDiagramScale})`,
+                  opacity: evfDiagramOpacity,
+                  transition: 'transform 280ms ease-out, opacity 280ms ease-out',
+                }}
+              >
+                <svg width="320" height="540" viewBox="0 0 320 540">
+                  <defs>
+                    <linearGradient id="growthGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#14492d" />
+                      <stop offset="100%" stopColor="#2b7a52" />
+                    </linearGradient>
+
+                    <filter id="layerShadow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="0" dy="4" stdDeviation="5" floodOpacity="0.28" />
+                    </filter>
+
+                    <filter id="foundationShadow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="0" dy="8" stdDeviation="8" floodOpacity="0.4" />
+                    </filter>
+                  </defs>
+
+                  <rect
+                    x="46"
+                    y={468 - mapRange(scene6Progress, 0.0, 0.2, 0, 120)}
+                    width="228"
+                    height="120"
+                    fill="#0d3a24"
+                    stroke="#2f8158"
+                    strokeWidth="1.5"
+                    opacity={mapRange(scene6Progress, 0.0, 0.2)}
+                    filter="url(#foundationShadow)"
+                    rx="5"
+                  />
+                  <line
+                    x1="52"
+                    y1={472 - mapRange(scene6Progress, 0.0, 0.2, 0, 120)}
+                    x2="268"
+                    y2={472 - mapRange(scene6Progress, 0.0, 0.2, 0, 120)}
+                    stroke="#61a885"
+                    strokeWidth="1"
+                    opacity={mapRange(scene6Progress, 0.08, 0.24, 0, 0.42)}
+                  />
+                  <text
+                    x="160"
+                    y={536 - mapRange(scene6Progress, 0.0, 0.2, 0, 120)}
+                    textAnchor="middle"
+                    fill="#a0bfaf"
+                    fontSize="13"
+                    opacity={mapRange(scene6Progress, 0.0, 0.2)}
                   >
-                    <stop offset="0%" stopColor="#14492d" />
-                    <stop offset="100%" stopColor="#2b7a52" />
-                  </linearGradient>
+                    Foundation
+                  </text>
 
-                  <filter
-                    id="layerShadow"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
+                  <rect
+                    x="56"
+                    y={352 - mapRange(scene6Progress, 0.2, 0.4, 0, 84)}
+                    width="208"
+                    height="84"
+                    fill="#15452d"
+                    stroke="#2f8158"
+                    strokeWidth="1.5"
+                    opacity={mapRange(scene6Progress, 0.2, 0.4)}
+                    filter="url(#layerShadow)"
+                    rx="8"
+                  />
+                  <line
+                    x1="68"
+                    y1={394 - mapRange(scene6Progress, 0.2, 0.4, 0, 84)}
+                    x2="252"
+                    y2={394 - mapRange(scene6Progress, 0.2, 0.4, 0, 84)}
+                    stroke="#5d9f80"
+                    strokeWidth="0.8"
+                    opacity={mapRange(scene6Progress, 0.28, 0.44, 0, 0.3)}
+                  />
+                  <text
+                    x="160"
+                    y={401 - mapRange(scene6Progress, 0.2, 0.4, 0, 84)}
+                    textAnchor="middle"
+                    fill="#a0bfaf"
+                    fontSize="13"
+                    opacity={mapRange(scene6Progress, 0.2, 0.4)}
                   >
-                    <feDropShadow
-                      dx="0"
-                      dy="5"
-                      stdDeviation="6"
-                      floodOpacity="0.28"
-                    />
-                  </filter>
+                    Income
+                  </text>
 
-                  <filter
-                    id="foundationShadow"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
+                  <rect
+                    x="66"
+                    y={264 - mapRange(scene6Progress, 0.4, 0.65, 0, 102)}
+                    width="188"
+                    height="102"
+                    fill="url(#growthGradient)"
+                    stroke="#2f8158"
+                    strokeWidth="1.5"
+                    opacity={mapRange(scene6Progress, 0.4, 0.65)}
+                    filter="url(#layerShadow)"
+                    rx="10"
+                  />
+                  <text
+                    x="160"
+                    y={318 - mapRange(scene6Progress, 0.4, 0.65, 0, 102)}
+                    textAnchor="middle"
+                    fill="#b4d1c2"
+                    fontSize="13"
+                    opacity={mapRange(scene6Progress, 0.4, 0.65)}
                   >
-                    <feDropShadow
-                      dx="0"
-                      dy="10"
-                      stdDeviation="10"
-                      floodOpacity="0.42"
-                    />
-                  </filter>
-                </defs>
+                    Growth
+                  </text>
 
-                {/* Foundation */}
-                <rect
-                  x="70"
-                  y={560 - mapRange(scene7Progress, 0.0, 0.18, 0, 130)}
-                  width="280"
-                  height="130"
-                  fill="#0d3a24"
-                  stroke="#2f8158"
-                  strokeWidth="1.6"
-                  opacity={mapRange(scene7Progress, 0.0, 0.18)}
-                  filter="url(#foundationShadow)"
-                  rx="6"
-                />
-                <line
-                  x1="78"
-                  y1={566 - mapRange(scene7Progress, 0.0, 0.18, 0, 130)}
-                  x2="342"
-                  y2={566 - mapRange(scene7Progress, 0.0, 0.18, 0, 130)}
-                  stroke="#61a885"
-                  strokeWidth="1"
-                  opacity={mapRange(scene7Progress, 0.06, 0.20, 0, 0.42)}
-                />
-                <text
-                  x="210"
-                  y={635 - mapRange(scene7Progress, 0.0, 0.18, 0, 130)}
-                  textAnchor="middle"
-                  fill="#a0bfaf"
-                  fontSize="16"
-                  opacity={mapRange(scene7Progress, 0.0, 0.18)}
-                >
-                  Foundation
-                </text>
+                  <rect
+                    x="76"
+                    y={172 - mapRange(scene6Progress, 0.65, 0.85, 0, 72)}
+                    width="168"
+                    height="72"
+                    fill="#1a5f3f"
+                    stroke="#4c9c74"
+                    strokeWidth="1.5"
+                    opacity={mapRange(scene6Progress, 0.65, 0.85)}
+                    filter="url(#layerShadow)"
+                    rx="12"
+                  />
+                  <rect
+                    x="82"
+                    y={178 - mapRange(scene6Progress, 0.65, 0.85, 0, 72)}
+                    width="156"
+                    height="60"
+                    fill="none"
+                    stroke="#72b692"
+                    strokeWidth="0.6"
+                    opacity={mapRange(scene6Progress, 0.74, 0.88, 0, 0.32)}
+                    rx="10"
+                  />
+                  <text
+                    x="160"
+                    y={214 - mapRange(scene6Progress, 0.65, 0.85, 0, 72)}
+                    textAnchor="middle"
+                    fill="#d1efe0"
+                    fontSize="13"
+                    opacity={mapRange(scene6Progress, 0.65, 0.85)}
+                  >
+                    Adaptive
+                  </text>
 
-                {/* Income */}
-                <rect
-                  x="84"
-                  y={400 - mapRange(scene7Progress, 0.18, 0.38, 0, 100)}
-                  width="252"
-                  height="100"
-                  fill="#15452d"
-                  stroke="#2f8158"
-                  strokeWidth="1.6"
-                  opacity={mapRange(scene7Progress, 0.18, 0.38)}
-                  filter="url(#layerShadow)"
-                  rx="10"
-                />
-                <line
-                  x1="102"
-                  y1={450 - mapRange(scene7Progress, 0.18, 0.38, 0, 100)}
-                  x2="318"
-                  y2={450 - mapRange(scene7Progress, 0.18, 0.38, 0, 100)}
-                  stroke="#5d9f80"
-                  strokeWidth="0.9"
-                  opacity={mapRange(scene7Progress, 0.26, 0.42, 0, 0.32)}
-                />
-                <text
-                  x="210"
-                  y={456 - mapRange(scene7Progress, 0.18, 0.38, 0, 100)}
-                  textAnchor="middle"
-                  fill="#a0bfaf"
-                  fontSize="16"
-                  opacity={mapRange(scene7Progress, 0.18, 0.38)}
-                >
-                  Income
-                </text>
-
-                {/* Growth */}
-                <rect
-                  x="100"
-                  y={255 - mapRange(scene7Progress, 0.38, 0.58, 0, 116)}
-                  width="220"
-                  height="116"
-                  fill="url(#growthGradient)"
-                  stroke="#2f8158"
-                  strokeWidth="1.6"
-                  opacity={mapRange(scene7Progress, 0.38, 0.58)}
-                  filter="url(#layerShadow)"
-                  rx="12"
-                />
-                <text
-                  x="210"
-                  y={318 - mapRange(scene7Progress, 0.38, 0.58, 0, 116)}
-                  textAnchor="middle"
-                  fill="#b4d1c2"
-                  fontSize="16"
-                  opacity={mapRange(scene7Progress, 0.38, 0.58)}
-                >
-                  Growth
-                </text>
-
-                {/* Adaptive */}
-                <rect
-                  x="116"
-                  y={95 - mapRange(scene7Progress, 0.58, 0.78, 0, 82)}
-                  width="188"
-                  height="82"
-                  fill="#1a5f3f"
-                  stroke="#4c9c74"
-                  strokeWidth="1.6"
-                  opacity={mapRange(scene7Progress, 0.58, 0.78)}
-                  filter="url(#layerShadow)"
-                  rx="14"
-                />
-                <rect
-                  x="123"
-                  y={102 - mapRange(scene7Progress, 0.58, 0.78, 0, 82)}
-                  width="174"
-                  height="68"
-                  fill="none"
-                  stroke="#72b692"
-                  strokeWidth="0.7"
-                  opacity={mapRange(scene7Progress, 0.68, 0.84, 0, 0.30)}
-                  rx="12"
-                />
-                <text
-                  x="210"
-                  y={142 - mapRange(scene7Progress, 0.58, 0.78, 0, 82)}
-                  textAnchor="middle"
-                  fill="#d1efe0"
-                  fontSize="16"
-                  opacity={mapRange(scene7Progress, 0.58, 0.78)}
-                >
-                  Adaptive
-                </text>
-
-                <line
-                  x1="116"
-                  y1="58"
-                  x2="304"
-                  y2="58"
-                  stroke="#6fb08e"
-                  strokeWidth="1"
-                  opacity={mapRange(scene7Progress, 0.84, 1, 0, 0.5)}
-                />
-              </svg>
+                  <line
+                    x1="76"
+                    y1="100"
+                    x2="244"
+                    y2="100"
+                    stroke="#6fb08e"
+                    strokeWidth="1"
+                    opacity={mapRange(scene6Progress, 0.84, 1, 0, 0.5)}
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* SCENE 8 — SYSTEM ABSORBS STRESS */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center px-8">
+        {/* SCENE 7 — SYSTEM ABSORBS STRESS */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center px-8">
           <div
-            className="relative flex h-[720px] w-full max-w-5xl items-center justify-center"
+            className="relative w-full max-w-5xl h-[700px] flex items-center justify-center"
             style={{
               opacity: stressSceneOpacity,
             }}
           >
-            {/* Lifestyle label / close loop */}
             <div
-              className="absolute top-6 text-center"
+              className="absolute top-8 text-center"
               style={{
-                opacity: scene8Progress > 0.10 ? 1 : 0,
+                opacity: scene7Progress > 0.08 ? 1 : 0,
               }}
             >
               <p
-                className="mb-2 text-3xl text-white/70 md:text-5xl"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-lg md:text-2xl uppercase text-white/40 mb-3"
+                style={{ letterSpacing: '0.32em' }}
               >
                 Lifestyle
               </p>
 
               <div
-                className="mx-auto mt-2 h-28 w-28 rounded-full"
+                className="mx-auto mt-2 w-24 h-24 rounded-full"
                 style={{
-                  opacity: finalLifestyleGlowOpacity,
+                  opacity: lifestyleGlowOpacity,
                   background:
-                    'radial-gradient(circle, rgba(120,210,255,0.30) 0%, rgba(120,210,255,0.14) 40%, rgba(120,210,255,0.00) 76%)',
+                    'radial-gradient(circle, rgba(120,210,255,0.36) 0%, rgba(120,210,255,0.16) 40%, rgba(120,210,255,0.00) 76%)',
                   filter: 'blur(8px)',
-                  transform: `scale(${1 + finalLifestyleGlowOpacity * 0.12})`,
+                  transform: `scale(${lifestyleGlowOpacity > 0 ? 1 + Math.sin(scene7Progress * 24) * 0.05 : 0.95})`,
+                  boxShadow:
+                    lifestyleGlowOpacity > 0
+                      ? '0 0 36px rgba(120,210,255,0.35)'
+                      : 'none',
                 }}
               />
             </div>
 
-            {/* Upward beam */}
             <div
-              className="absolute top-[96px] h-[200px] w-[6px] rounded-full"
+              className="absolute top-[92px] h-[180px] w-[6px] rounded-full"
               style={{
-                opacity:
-                  scene8Progress > 0.52
-                    ? Math.min((scene8Progress - 0.52) / 0.10, 1)
-                    : 0,
+                opacity: lifestyleBeamOpacity,
                 background:
                   'linear-gradient(to bottom, rgba(120,210,255,0), rgba(120,210,255,0.95), rgba(120,210,255,0.18), rgba(120,210,255,0))',
                 boxShadow:
                   '0 0 28px rgba(120,210,255,0.50), 0 0 56px rgba(120,210,255,0.22)',
-                transform: `scaleY(${
-                  scene8Progress > 0.62
-                    ? 1 + Math.sin(scene8Progress * 22) * 0.05
-                    : 1
-                })`,
+                transform: `scaleY(${scene7Progress > 0.62 ? 1 + Math.sin(scene7Progress * 22) * 0.05 : 1})`,
               }}
             />
 
-            {/* Orb moving upward */}
             <div
               className="absolute left-1/2 -translate-x-1/2 rounded-full"
               style={{
                 width: '20px',
                 height: '20px',
-                opacity: scene8Progress > 0.54 ? 1 : 0,
+                opacity: scene7Progress > 0.52 ? 1 : 0,
                 background:
                   'radial-gradient(circle, rgba(150,225,255,1) 0%, rgba(120,210,255,0.82) 45%, rgba(120,210,255,0) 72%)',
                 boxShadow: '0 0 34px rgba(120,210,255,0.7)',
                 top: `${
-                  scene8Progress < 0.54
-                    ? 404
-                    : 404 - Math.min((scene8Progress - 0.54) / 0.22, 1) * 225
+                  scene7Progress < 0.52
+                    ? 382
+                    : 382 - Math.min((scene7Progress - 0.52) / 0.24, 1) * 190
                 }px`,
               }}
             />
 
-            {/* Stress wave 1 */}
             <div
-              className="absolute left-[2%] top-1/2 h-[300px] w-[360px] -translate-y-1/2 rounded-full"
+              className="absolute left-[2%] top-1/2 -translate-y-1/2 h-[280px] w-[340px] rounded-full"
               style={{
-                opacity:
-                  scene8Progress > 0.10 && scene8Progress < 0.72 ? 0.42 : 0,
+                opacity: scene7Progress > 0.1 && scene7Progress < 0.68 ? 0.42 : 0,
                 background:
                   'radial-gradient(circle at 28% 50%, rgba(170,185,205,0.34), rgba(130,150,170,0.18) 38%, rgba(130,150,170,0.04) 58%, transparent 76%)',
-                transform: `translateX(${scene8Progress * 460}px) translateY(-50%)`,
+                transform: `translateX(${scene7Progress * 460}px) translateY(-50%)`,
                 filter: 'blur(22px)',
               }}
             />
 
-            {/* Stress wave 2 */}
             <div
-              className="absolute left-[-2%] top-1/2 h-[220px] w-[260px] -translate-y-1/2 rounded-full"
+              className="absolute left-[-2%] top-1/2 -translate-y-1/2 h-[200px] w-[240px] rounded-full"
               style={{
-                opacity:
-                  scene8Progress > 0.18 && scene8Progress < 0.62 ? 0.22 : 0,
+                opacity: scene7Progress > 0.18 && scene7Progress < 0.62 ? 0.22 : 0,
                 background:
                   'radial-gradient(circle at 30% 50%, rgba(180,195,215,0.22), rgba(140,160,180,0.06) 44%, transparent 74%)',
-                transform: `translateX(${scene8Progress * 390}px) translateY(-50%)`,
+                transform: `translateX(${scene7Progress * 390}px) translateY(-50%)`,
                 filter: 'blur(16px)',
               }}
             />
 
-            {/* System stack */}
-            <div
-              className="relative flex flex-col items-center gap-4"
-              style={{ opacity: stressSystemOpacity }}
-            >
+            <div className="relative flex flex-col items-center gap-3">
               <div
-                className="h-[78px] w-[180px] rounded-[12px] border border-emerald-700/70 bg-emerald-900/60"
+                className="w-[164px] h-[72px] rounded-[12px] border border-emerald-700/70 bg-emerald-900/60"
                 style={{
-                  transform: `translateX(${
-                    scene8Progress > 0.28
-                      ? Math.sin(scene8Progress * 18) * 6
-                      : 0
-                  }px) rotate(${
-                    scene8Progress > 0.28
-                      ? Math.sin(scene8Progress * 11) * 0.4
-                      : 0
-                  }deg)`,
+                  transform: `translateX(${scene7Progress > 0.28 ? Math.sin(scene7Progress * 18) * 6 : 0}px) rotate(${scene7Progress > 0.28 ? Math.sin(scene7Progress * 11) * 0.4 : 0}deg)`,
                   boxShadow:
                     '0 8px 24px rgba(19, 79, 57, 0.22), inset 0 1px 0 rgba(130,220,180,0.16)',
                 }}
               />
 
               <div
-                className="h-[104px] w-[198px] rounded-[10px] border border-emerald-700/70"
+                className="w-[182px] h-[98px] rounded-[10px] border border-emerald-700/70"
                 style={{
                   background:
                     'linear-gradient(to top, rgba(19,73,45,0.82), rgba(37,102,68,0.82))',
-                  transform: `translateX(${
-                    scene8Progress > 0.26
-                      ? -Math.sin(scene8Progress * 12) * 4
-                      : 0
-                  }px) scaleY(${scene8Progress > 0.30 ? 0.972 : 1})`,
+                  transform: `translateX(${scene7Progress > 0.26 ? -Math.sin(scene7Progress * 12) * 4 : 0}px) scaleY(${scene7Progress > 0.3 ? 0.972 : 1})`,
                   boxShadow:
                     '0 8px 24px rgba(19, 79, 57, 0.22), inset 0 1px 0 rgba(130,220,180,0.14)',
                 }}
               />
 
               <div
-                className="relative h-[88px] w-[222px] overflow-hidden rounded-[8px] border border-emerald-700/70 bg-emerald-950/75"
+                className="w-[202px] h-[82px] rounded-[8px] border border-emerald-700/70 bg-emerald-950/75 relative overflow-hidden"
                 style={{
-                  transform: `scaleX(${scene8Progress > 0.28 ? 0.986 : 1})`,
+                  transform: `scaleX(${scene7Progress > 0.28 ? 0.986 : 1})`,
                   boxShadow:
                     '0 8px 24px rgba(19, 79, 57, 0.22), inset 0 1px 0 rgba(130,220,180,0.12)',
                 }}
@@ -755,41 +706,31 @@ export default function App() {
                     width: '100%',
                     background:
                       'linear-gradient(to right, rgba(120,210,255,0.00), rgba(120,210,255,0.22), rgba(120,210,255,0.00))',
-                    transform: `translateX(${
-                      scene8Progress > 0.20
-                        ? (scene8Progress - 0.20) * 300
-                        : -300
-                    }px)`,
-                    opacity:
-                      scene8Progress > 0.20 && scene8Progress < 0.80 ? 1 : 0,
+                    transform: `translateX(${scene7Progress > 0.2 ? (scene7Progress - 0.2) * 300 : -300}px)`,
+                    opacity: scene7Progress > 0.2 && scene7Progress < 0.78 ? 1 : 0,
                   }}
                 />
               </div>
 
               <div
-                className="h-[126px] w-[246px] rounded-[6px] border border-emerald-700/80 bg-[#0d3a24]"
+                className="w-[224px] h-[118px] rounded-[6px] border border-emerald-700/80 bg-[#0d3a24]"
                 style={{
-                  transform: `translateY(${
-                    scene8Progress > 0.24
-                      ? Math.sin(scene8Progress * 8) * 2.5
-                      : 0
-                  }px)`,
+                  transform: `translateY(${scene7Progress > 0.24 ? Math.sin(scene7Progress * 8) * 2.5 : 0}px)`,
                   boxShadow:
                     '0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(130,220,180,0.12)',
                 }}
               />
             </div>
 
-            {/* Message */}
             <div
-              className="absolute bottom-8 px-8 text-center"
+              className="absolute bottom-6 text-center px-8"
               style={{
-                opacity: stressMessageOpacity,
-                transform: `translateY(${(1 - Math.max(stressMessageOpacity, 0)) * 12}px)`,
+                opacity: scene7TextOpacity,
+                transform: `translateY(${(1 - scene7TextOpacity) * 16}px)`,
               }}
             >
               <h2
-                className="max-w-5xl text-3xl md:text-5xl"
+                className="text-3xl md:text-5xl max-w-4xl"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 The system absorbs stress… so your life doesn’t have to.
@@ -798,14 +739,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* SCENE 9 — CLOSING */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        {/* SCENE 8 — CLOSING */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
-            className="max-w-4xl px-8 text-center text-4xl md:text-6xl"
+            className="text-4xl md:text-6xl text-center max-w-4xl px-8"
             style={{
               fontFamily: 'Georgia, serif',
-              opacity: getFadeInHoldOut(scene9Progress, 0.24, 0.82),
-              transform: `translateY(${(1 - getFadeInHoldOut(scene9Progress, 0.24, 0.82)) * 18}px)`,
+              opacity: getFadeInHoldOut(scene8Progress, 0.22, 0.86),
+              transform: `translateY(${(1 - getFadeInHoldOut(scene8Progress, 0.22, 0.86)) * 20}px)`,
             }}
           >
             <p>A portfolio may recover.</p>
@@ -813,26 +754,26 @@ export default function App() {
           </div>
         </div>
 
-        {/* SCENE 10 — FINAL CTA */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center">
+        {/* SCENE 9 — FINAL CTA */}
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
-            className="px-8 text-center"
+            className="text-center px-8"
             style={{
-              opacity: ctaOpacity,
-              transform: `translateY(${(1 - ctaOpacity) * 24}px)`,
+              opacity: finalCtaOpacity,
+              transform: `translateY(${(1 - finalCtaOpacity) * 18}px)`,
             }}
           >
             <a
               href="#"
-              className="text-2xl underline underline-offset-8 decoration-white/55 transition-colors hover:decoration-white md:text-4xl"
+              className="text-2xl md:text-4xl underline underline-offset-8 decoration-white/55 hover:decoration-white transition-colors"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               Explore the Enduring Value Framework™
             </a>
 
             <p
-              className="mt-5 text-sm uppercase text-white/45 md:text-base"
-              style={{ letterSpacing: '0.20em' }}
+              className="mt-5 text-sm md:text-base uppercase text-white/45"
+              style={{ letterSpacing: '0.2em' }}
             >
               The architecture of usable wealth
             </p>
