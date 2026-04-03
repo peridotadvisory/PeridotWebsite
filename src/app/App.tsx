@@ -144,6 +144,42 @@ export default function App() {
             />
           </video>
 
+
+
+
+          {/* HERO BRAND LOCKUP — place inside SCENE 0 */}
+<div className="absolute inset-x-0 top-0 z-30 pointer-events-none">
+  <div className="mx-auto w-full max-w-[1600px] px-6 pt-6 md:px-10 md:pt-8">
+    <div className="flex items-start gap-4 md:gap-5">
+      <img
+        src={`${import.meta.env.BASE_URL}peridot-mark.png`}
+        alt="Peridot Advisory mark"
+        className="h-10 w-10 md:h-14 md:w-14 object-contain opacity-95 drop-shadow-[0_0_18px_rgba(0,0,0,0.35)]"
+      />
+
+      <div className="pt-0.5">
+        <p
+          className="text-[11px] md:text-[13px] uppercase tracking-[0.34em] text-[#F2E7CF]/88"
+        >
+          Peridot Advisory
+        </p>
+
+        <p
+          className="mt-3 text-sm md:text-base text-[#F2E7CF]/62"
+          style={{
+            fontFamily: 'Georgia, serif',
+            letterSpacing: '0.02em',
+          }}
+        >
+          Capital architecture for enduring, usable wealth.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+          
           <div
             className="absolute inset-0"
             style={{
