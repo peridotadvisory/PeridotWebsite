@@ -229,56 +229,58 @@ export default function App() {
           </div>
         </div>
 
-        {/* SCENE 5 — CONVERGENCE UNDER STRESS */}
+                {/* SCENE 5 — CONVERGENCE UNDER STRESS */}
         <div className="sticky top-0 h-screen w-full flex items-center justify-center">
           <div
-            className="text-center max-w-4xl px-8 relative"
+            className="text-center max-w-5xl px-8 relative"
             style={{ fontFamily: 'Georgia, serif' }}
           >
-            <div className="relative mx-auto mb-16 h-56 w-56">
-  <div
-    className="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20"
-    style={{
-      opacity:
-        scene5Progress > 0.04
-          ? Math.min((scene5Progress - 0.04) / 0.16, 1) *
-            (1 - Math.max((scene5Progress - 0.44) / 0.18, 0))
-          : 0,
-      transform: `translate(-50%, -50%) scale(${
-        1 - mapRange(scene5Progress, 0.04, 0.42, 0, 0.32)
-      })`,
-    }}
-  />
-  <div
-    className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/25"
-    style={{
-      opacity:
-        scene5Progress > 0.08
-          ? Math.min((scene5Progress - 0.08) / 0.16, 1) *
-            (1 - Math.max((scene5Progress - 0.46) / 0.18, 0))
-          : 0,
-      transform: `translate(-50%, -50%) scale(${
-        1 - mapRange(scene5Progress, 0.08, 0.44, 0, 0.22)
-      })`,
-    }}
-  />
-  <div
-    className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full"
-    style={{
-      opacity:
-        scene5Progress > 0.14
-          ? Math.min((scene5Progress - 0.14) / 0.14, 1) *
-            (1 - Math.max((scene5Progress - 0.54) / 0.16, 0))
-          : 0,
-      background:
-        'radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.18) 48%, rgba(255,255,255,0) 76%)',
-      filter: 'blur(3px)',
-      transform: `translate(-50%, -50%) scale(${
-        0.95 + mapRange(scene5Progress, 0.14, 0.38, 0, 0.14)
-      })`,
-    }}
-  />
-</div>
+            <div className="relative mx-auto mb-16 h-72 w-72">
+              <div
+                className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#5fbf8f]/30"
+                style={{
+                  opacity:
+                    scene5Progress > 0.04
+                      ? Math.min((scene5Progress - 0.04) / 0.16, 1) *
+                        (1 - Math.max((scene5Progress - 0.44) / 0.18, 0))
+                      : 0,
+                  boxShadow: '0 0 28px rgba(95,191,143,0.12)',
+                  transform: `translate(-50%, -50%) scale(${
+                    1 - mapRange(scene5Progress, 0.04, 0.42, 0, 0.34)
+                  })`,
+                }}
+              />
+              <div
+                className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#76d6a5]/35"
+                style={{
+                  opacity:
+                    scene5Progress > 0.08
+                      ? Math.min((scene5Progress - 0.08) / 0.16, 1) *
+                        (1 - Math.max((scene5Progress - 0.46) / 0.18, 0))
+                      : 0,
+                  boxShadow: '0 0 24px rgba(118,214,165,0.10)',
+                  transform: `translate(-50%, -50%) scale(${
+                    1 - mapRange(scene5Progress, 0.08, 0.44, 0, 0.24)
+                  })`,
+                }}
+              />
+              <div
+                className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                style={{
+                  opacity:
+                    scene5Progress > 0.14
+                      ? Math.min((scene5Progress - 0.14) / 0.14, 1) *
+                        (1 - Math.max((scene5Progress - 0.54) / 0.16, 0))
+                      : 0,
+                  background:
+                    'radial-gradient(circle, rgba(115,220,160,0.55) 0%, rgba(64,170,114,0.26) 46%, rgba(64,170,114,0.00) 76%)',
+                  filter: 'blur(4px)',
+                  transform: `translate(-50%, -50%) scale(${
+                    0.95 + mapRange(scene5Progress, 0.14, 0.38, 0, 0.16)
+                  })`,
+                }}
+              />
+            </div>
 
             <p
               className="text-4xl md:text-6xl text-white/70"
@@ -322,9 +324,9 @@ export default function App() {
         </div>
 
         {/* SCENE 6 — EVF REVEAL */}
-        <div className="sticky top-0 h-screen w-full flex items-center justify-center px-8 relative">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center px-8 md:px-12 relative">
           <div
-            className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16"
+            className="max-w-[1600px] w-full grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-12 md:gap-24 items-center"
             style={{
               opacity: evfSceneOpacity,
               transform: `translateY(${(1 - evfSceneOpacity) * 8}px)`,
@@ -332,92 +334,92 @@ export default function App() {
           >
             <div className="flex flex-col justify-center">
               <p
-                className="text-[13px] md:text-[14px] uppercase text-white/30 mb-10"
+                className="text-[14px] md:text-[16px] uppercase text-white/30 mb-12"
                 style={{ letterSpacing: '0.32em' }}
               >
                 Enduring Value Framework™
               </p>
 
               <div
-                className="transition-all duration-500 py-4"
+                className="transition-all duration-500 py-5"
                 style={{
                   opacity: evfStage === 0 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 0 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="text-3xl md:text-4xl mb-3"
+                  className="text-4xl md:text-5xl mb-4"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Foundation
                 </h3>
-                <p className="text-white/55 text-base md:text-lg">
+                <p className="text-white/55 text-lg md:text-xl leading-relaxed">
                   Structural integrity and protected liquidity
                 </p>
               </div>
 
               <div
-                className="transition-all duration-500 py-4"
+                className="transition-all duration-500 py-5"
                 style={{
                   opacity: evfStage === 1 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 1 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="text-3xl md:text-4xl mb-3"
+                  className="text-4xl md:text-5xl mb-4"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Income
                 </h3>
-                <p className="text-white/55 text-base md:text-lg">
+                <p className="text-white/55 text-lg md:text-xl leading-relaxed">
                   Stability and repeatable cash flow
                 </p>
               </div>
 
               <div
-                className="transition-all duration-500 py-4"
+                className="transition-all duration-500 py-5"
                 style={{
                   opacity: evfStage === 2 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 2 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="text-3xl md:text-4xl mb-3"
+                  className="text-4xl md:text-5xl mb-4"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Growth
                 </h3>
-                <p className="text-white/55 text-base md:text-lg">
+                <p className="text-white/55 text-lg md:text-xl leading-relaxed">
                   Long-term expansion and compounding
                 </p>
               </div>
 
               <div
-                className="transition-all duration-500 py-4"
+                className="transition-all duration-500 py-5"
                 style={{
                   opacity: evfStage === 3 ? 1 : evfStage === 4 ? 0.8 : 0.4,
                   transform: evfStage === 3 ? 'scale(1.04)' : 'scale(1)',
                 }}
               >
                 <h3
-                  className="text-3xl md:text-4xl mb-3"
+                  className="text-4xl md:text-5xl mb-4"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Adaptive
                 </h3>
-                <p className="text-white/55 text-base md:text-lg">
+                <p className="text-white/55 text-lg md:text-xl leading-relaxed">
                   Optionality across changing regimes
                 </p>
               </div>
 
               <div
-                className="transition-all duration-500 pt-6 mt-4 border-t border-white/10"
+                className="transition-all duration-500 pt-8 mt-6 border-t border-white/10"
                 style={{
                   opacity: evfStage === 4 ? 1 : 0,
                   transform: evfStage === 4 ? 'scale(1)' : 'scale(0.97)',
                 }}
               >
-                <p className="text-white/45 text-sm italic">
+                <p className="text-white/45 text-base italic">
                   Every engine has a purpose. Every dollar has a job.
                 </p>
               </div>
@@ -426,7 +428,7 @@ export default function App() {
             <div className="flex items-center justify-center">
               <div
                 style={{
-                  transform: `scale(${evfDiagramScale})`,
+                  transform: `scale(${evfDiagramScale * 1.22})`,
                   opacity: evfDiagramOpacity,
                   transition: 'transform 280ms ease-out, opacity 280ms ease-out',
                 }}
@@ -473,7 +475,7 @@ export default function App() {
                     y={536 - mapRange(scene6Progress, 0.0, 0.2, 0, 120)}
                     textAnchor="middle"
                     fill="#a0bfaf"
-                    fontSize="13"
+                    fontSize="15"
                     opacity={mapRange(scene6Progress, 0.0, 0.2)}
                   >
                     Foundation
@@ -505,7 +507,7 @@ export default function App() {
                     y={401 - mapRange(scene6Progress, 0.2, 0.4, 0, 84)}
                     textAnchor="middle"
                     fill="#a0bfaf"
-                    fontSize="13"
+                    fontSize="15"
                     opacity={mapRange(scene6Progress, 0.2, 0.4)}
                   >
                     Income
@@ -528,7 +530,7 @@ export default function App() {
                     y={318 - mapRange(scene6Progress, 0.4, 0.65, 0, 102)}
                     textAnchor="middle"
                     fill="#b4d1c2"
-                    fontSize="13"
+                    fontSize="15"
                     opacity={mapRange(scene6Progress, 0.4, 0.65)}
                   >
                     Growth
@@ -562,7 +564,7 @@ export default function App() {
                     y={214 - mapRange(scene6Progress, 0.65, 0.85, 0, 72)}
                     textAnchor="middle"
                     fill="#d1efe0"
-                    fontSize="13"
+                    fontSize="15"
                     opacity={mapRange(scene6Progress, 0.65, 0.85)}
                   >
                     Adaptive
